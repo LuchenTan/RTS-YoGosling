@@ -1,3 +1,5 @@
+# Read from all json files in "twitter-stream-2017-12-30.tar" and output the "text" field of each twitter
+
 import json
 import time
 import tarfile
@@ -6,10 +8,9 @@ import bz2
 
 start = time.time()
 
-# need to change tarfile/directory name as necessary
 tar = tarfile.open("twitter-stream-2017-12-30.tar", "r")
 tar.extractall("./test_dir")
-#count = 0
+#count = 0 Just for Test Purpose
 for root, dirs, files in os.walk("./test_dir"):
     for file in files:
         if file.endswith(".bz2"):
