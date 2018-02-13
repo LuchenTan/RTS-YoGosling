@@ -26,7 +26,30 @@ class QueryGeneration:
         return self._query
 
     def addField(self, field, words=[], weights=[]):
-
+        if field.lower().startswith('t'):
+            try:
+                for i, w in enumerate(words):
+                    self._query['title'][w] = weights[i]
+            except:
+                print("Please input the same number of words and weights")
+                raise
+        elif field.lower().startswith('n'):
+            try:
+                for i, w in enumerate(words):
+                    self._query['narr+desc'][w] = weights[i]
+            except:
+                print("Please input the same number of words and weights")
+                raise
+        elif field.lower().startswith('e'):
+            try:
+                for i, w in enumerate(words):
+                    self._query['expansion'][w] = weights[i]
+            except:
+                print("Please input the same number of words and weights")
+                raise
+        else:
+            print('Please input a valid field name: title, narr+desc or expansion')
+            return
 
     def setField(self, field, words=[], weights=[]):
         new_dict = dict()
