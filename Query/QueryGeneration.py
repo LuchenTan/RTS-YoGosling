@@ -12,15 +12,19 @@ from nltk.corpus import stopwords
 PUNCTUATION = list(string.punctuation)
 STOP = stopwords.words('english') + ['rt', 'via']
 
+
 class QueryGeneration:
-    def __init__(self, topic, tokenizer=NLTK.TweetTokenizer(preserve_case=False), stopword=False):
+    def __init__(self, topic, current_query=None, tokenizer=NLTK.TweetTokenizer(preserve_case=False), stopword=False):
         self.topic = topic
-        self._query = {'title': {}, 'narr+desc': {}, 'expansion': {}}
         self.tknz = tokenizer
         # TODO: setField and addField only works for nltk tweet tokenizer for now
         # TODO: might need to add my tweet tokenizer later
         self.stopword = stopword
-        self.setField(field='title')
+        if current_query:
+            self._query = current_query
+        else:
+            self._query = {'title': {}, 'narr+desc': {}, 'expansion': {}}
+            self.setField(field='title')
 
     def getQuery(self):
         return self._query
@@ -64,7 +68,7 @@ class QueryGeneration:
                     raise
             else:
                 title_tokens = self.tknz.tokenize(self.topic['title'])
-                if stopwords:
+                if self.stopword:
                     title_tokens = [token for token in title_tokens if token not in PUNCTUATION]
                 else:
                     title_tokens = [token for token in title_tokens if token not in PUNCTUATION+STOP]
@@ -88,3 +92,14 @@ class QueryGeneration:
         else:
             print('Please input a valid field name: title, narr+desc or expansion')
             return
+
+
+# import Query.TRECProfile as trec
+#
+# r = trec.TRECProfileReader("../profiles/TREC2016-RTS-topics.json", 'RTS16')
+# r.read()
+# for topid, topic in r.topics.items():
+#     print(topic['title'])
+#     qg = QueryGeneration(topic, {'title': {}, 'narr+': {'a': 1}, 'e': {'b': 1}}, stopword=False)
+#     qg.setField('na', ['a', 'b', 'c'], [1, 2, 5])
+#     print(qg.getQuery())
