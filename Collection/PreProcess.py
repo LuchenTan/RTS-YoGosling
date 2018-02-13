@@ -18,13 +18,13 @@ NOTE:
 4. Format
     * write all useful fields to a json format
 """
-import json
+
 
 class PreProcessor:
     def __init__(self, tokenizer, en_lang=True,
                  ascii_filter=True, ascii_count=3,
                  hashtag_count=5,
-                 stopword_remove=False,
+                 stopword=True,
                  keep_urls=True, keep_hashtags=True):
         self.tokenizer = tokenizer # tokenizer
         self.en_lang = en_lang # use 'lang' field, 'en' only
@@ -32,26 +32,12 @@ class PreProcessor:
         self.ascii_count = ascii_count # ignore tweet if normal words less than this number
         self.hashtag_count = hashtag_count # ignore tweet if hashtag number greater than this number
         self.keep_urls = keep_urls # keep URLs in cleaned text
-        self.stopword_remove = stopword_remove # remove stop words from cleaned text
+        self.stopword = stopword # remove stop words from cleaned text
         self.keep_hashtags = keep_hashtags # keep hashtags in cleaned text
-
-    def process(self, tweet_json):
-        text = tweet_json.get('text')
-        timestamp_ms = tweet_json.get('timestamp_ms')
-        id = tweet_json.get('id')
-        if not text or not timestamp_ms or not id:
-            return None
-
-        # Language Detection, keep 'en' only
-        if self.en_lang:
-            if not tweet_json.get('lang') == 'en':
-                return None
-
-        # built new json format
-        new_json = {
-            'id': id,
-            'text': text,
-            'timestamp_ms': timestamp_ms,
+        self.new_json = {
+            'id': None,
+            'text': None,
+            'timestamp_ms': None,
             'cleaned_text': "",
             'normal_words': [],
             'hashtags': [],
@@ -61,6 +47,26 @@ class PreProcessor:
             'emojis': [],
             'crawled_pages': []
         }
+
+    def process(self, tweet_json):
+        text = tweet_json.get('text')
+        timestamp_ms = tweet_json.get('timestamp_ms')
+        id = tweet_json.get('id')
+        if not text or not timestamp_ms or not id:
+            self.new_json = None
+            return
+
+        # Language Detection, keep 'en' only
+        if self.en_lang:
+            if not tweet_json.get('lang') == 'en':
+                self.new_json = None
+                return
+
+        # set new json format
+        self.new_json['id'] = id
+        self.new_json['text'] = text
+        self.new_json['timestamp_ms'] = timestamp_ms
+
         # Tokenization
         tokens = self.tokenizer(text)
 
@@ -73,34 +79,44 @@ class PreProcessor:
                     token = token.encode("ascii", errors="ignore").decode()
                 if len(token) > 0:
                     cleaned_text.append(token)
-                    new_json['normal_words'].append(token)
+                    self.new_json['normal_words'].append(token)
             elif token_type == 'H':
-                new_json['hashtags'].append(token)
+                self.new_json['hashtags'].append(token)
                 if self.keep_hashtags:
                     cleaned_text.append(token)
             elif token_type == 'U':
-                new_json['urls'].append(token)
+                self.new_json['urls'].append(token)
                 if self.keep_urls:
                     cleaned_text.append(token)
             elif token_type == 'USR':
-                new_json['mentions'].append(token)
+                self.new_json['mentions'].append(token)
             elif token_type == 'PN':
-                new_json['numbers'].append(token)
+                self.new_json['numbers'].append(token)
                 cleaned_text.append(token)
             elif token_type == 'E':
-                new_json['emojis'].append(token)
+                self.new_json['emojis'].append(token)
             elif token_type == 'S':
-                if not self.stopword_remove:
+                if self.stopword:
                     cleaned_text.append(token.lower())
 
         # Simple Trash Detection
-        if len(new_json['hashtags']) >= self.hashtag_count:
-            return None
-        if len(new_json['normal_words']) < self.ascii_count:
-            return None
+        if len(self.new_json['hashtags']) >= self.hashtag_count:
+            self.new_json = None
+            return
+        if len(self.new_json['normal_words']) < self.ascii_count:
+            self.new_json = None
+            return
 
-        new_json['cleaned_text'] = " ".join(cleaned_text)
-        return new_json
+        self.new_json['cleaned_text'] = " ".join(cleaned_text)
+        return self.new_json
+
+    def getTweetJson(self):
+        return self.new_json
+
+    def setCrawledPage(self, text):
+        if self.new_json:
+            self.new_json['crawled_pages'] = text
+
 
 
 # import Collection.Tokenizer as tt
