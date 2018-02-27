@@ -14,7 +14,9 @@ STOP = stopwords.words('english') + ['rt', 'via']
 
 
 class QueryGeneration:
-    def __init__(self, topic, current_query=None, tokenizer=NLTK.TweetTokenizer(preserve_case=False), stopword=False):
+    def __init__(self, topic, current_query=None,
+                 tokenizer=NLTK.TweetTokenizer(preserve_case=False),
+                 stopword=True):
         self.topic = topic
         self.tknz = tokenizer
         # TODO: setField and addField only works for nltk tweet tokenizer for now

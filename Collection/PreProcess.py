@@ -34,10 +34,13 @@ class PreProcessor:
         self.keep_urls = keep_urls # keep URLs in cleaned text
         self.stopword = stopword # remove stop words from cleaned text
         self.keep_hashtags = keep_hashtags # keep hashtags in cleaned text
+
+
+    def process(self, tweet_json):
         self.new_json = {
-            'id': None,
-            'text': None,
-            'timestamp_ms': None,
+            'id': 0,
+            'text': "",
+            'timestamp_ms': 0,
             'cleaned_text': "",
             'normal_words': [],
             'hashtags': [],
@@ -47,8 +50,6 @@ class PreProcessor:
             'emojis': [],
             'crawled_pages': []
         }
-
-    def process(self, tweet_json):
         text = tweet_json.get('text')
         timestamp_ms = tweet_json.get('timestamp_ms')
         id = tweet_json.get('id')
