@@ -15,7 +15,6 @@ class TwitterStream(TwythonStreamer):
 
     def on_success(self, data):
         if 'text' in data:
-            print(data)
             producer.send(kafkaTopic, data)
 
     def on_error(self, status_code, data):
