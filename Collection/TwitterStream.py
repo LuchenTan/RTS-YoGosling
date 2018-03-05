@@ -13,6 +13,12 @@ kafkaTopic = config.topic
 
 class TwitterStream(TwythonStreamer):
 
+    # def __init__(self, **oauth):
+    #    if len(oauth) == 0:
+    #        TwythonStreamer(**config.oauth)
+    #    else:
+    #        TwythonStreamer(**oauth)
+
     def on_success(self, data):
         if 'text' in data:
             producer.send(kafkaTopic, data)
@@ -24,8 +30,11 @@ class TwitterStream(TwythonStreamer):
     def on_timeout(self):
         return True  # Don't kill the stream
 
+    def get_topic(self):
+        return kafkaTopic
+
 
 if __name__ == '__main__':
     stream = TwitterStream(**config.oauth)
-    stream.statuses.filter(language=['en'], track=['trump'])
+    stream.statuses.sample()
 

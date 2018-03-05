@@ -4,8 +4,8 @@ from Relevance import simpleCounting as rm
 import json
 
 # Load Profiles
-rts16_path = "../profiles/TREC2016-RTS-topics.json"
-rts17_path = "../profiles/RTS17-topics.json"
+rts16_path = "profiles/TREC2016-RTS-topics.json"
+rts17_path = "profiles/RTS17-topics.json"
 profile = TRECProfile.TRECProfileReader(rts17_path, 17)
 profile.read()
 queryset = dict()

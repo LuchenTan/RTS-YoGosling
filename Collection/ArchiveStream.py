@@ -7,10 +7,11 @@ import os
 import shutil
 import sys
 import tarfile
+import time
 
 from kafka import KafkaProducer
 
-import config.producer_file_config as config
+from config import producer_file_config as config
 
 producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                          batch_size=config.batchsize)
@@ -21,7 +22,6 @@ class ArchiveStream():
     def __init__(self, archive_path):
         self.path = archive_path
         self.tmp_path = os.path.join(os.path.dirname(self.path), "tmp_dir")
-        print(self.tmp_path)
 
     def extract(self, lang='en', tmp_path=""):
         if tmp_path:
@@ -41,6 +41,7 @@ class ArchiveStream():
             for file in files:
                 if file.endswith(".bz2"):
                     print("Start working on file: ", os.path.join(root, file))
+                    sys.stdout.flush()
                     with bz2.BZ2File(os.path.join(root, file), "r") as bz_file:
                         for line in bz_file:
                             tweet = json.loads(line.decode('utf-8'))
@@ -56,10 +57,12 @@ class ArchiveStream():
                                         producer.send(kafkaTopic, tweet)
                                     except:
                                         pass
-                    print(producer.metrics())
         # clean up
         shutil.rmtree(self.tmp_path)
+        print(producer.metrics())
 
 if __name__ == '__main__':
     arcS = ArchiveStream(config.filename)
+    start = time.time()
     arcS.extract()
+    print("Total time used: ", time.time() - start)
