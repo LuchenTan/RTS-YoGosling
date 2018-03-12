@@ -21,7 +21,7 @@ kafkaTopic = config.topic
 class ArchiveStream():
     def __init__(self, archive_path):
         self.path = archive_path
-        self.tmp_path = os.path.join(os.path.dirname(self.path), "tmp_dir")
+        self.tmp_path = "tmp_dir"
 
     def extract(self, lang='en', tmp_path=""):
         if tmp_path:
@@ -38,6 +38,8 @@ class ArchiveStream():
             shutil.rmtree(self.tmp_path)
             sys.exit(1)
         for root, dirs, files in os.walk(self.tmp_path):
+            dirs.sort(key=int)
+            files.sort(key=lambda x: int(x.split(".")[0]))
             for file in files:
                 if file.endswith(".bz2"):
                     print("Start working on file: ", os.path.join(root, file))
@@ -49,7 +51,9 @@ class ArchiveStream():
                                 if lang:
                                     if tweet['lang'] == lang:
                                         try:
-                                            producer.send(kafkaTopic, tweet)
+                                            #print(tweet['timestamp_ms'])
+                                            if int(tweet['timestamp_ms']) >= 1501286400000 and int(tweet['timestamp_ms']) <= 1501977599000:
+                                                producer.send(kafkaTopic, tweet)
                                         except:
                                             pass
                                 else:

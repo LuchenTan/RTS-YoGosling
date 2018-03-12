@@ -40,6 +40,7 @@ for message in consumer:
     # process each tweet
     tweetjson = prePro.process(tweet)
     if tweetjson:
+        #print(tweetjson)
         time = int(round(float(tweetjson['timestamp_ms'])/1000))
         newDay = datetime.datetime.fromtimestamp(time).day
         if newDay != day:
@@ -51,4 +52,5 @@ for message in consumer:
             if tm.match(query, tweetjson):
                 if dictlimit[topid] > 0:
                     print(topid, tweetjson['id'], time, runNo)
+                    sys.stdout.flush()
                     dictlimit[topid]-=1
