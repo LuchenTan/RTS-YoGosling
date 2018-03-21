@@ -1,7 +1,7 @@
-from Collection import Tokenizer, PreProcess, TwitterStream
+from Collection import Tokenizer, PreProcess, TwitterStream, pageCrawler
 from Query import QueryGeneration, TRECProfile
 from Relevance import simpleTitleMatch as tm
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, KafkaProducer
 import json
 from config import consumer_config as config
 import datetime
@@ -35,12 +35,22 @@ consumer.subscribe([topic])
 dictlimit = dict.fromkeys(queryset.keys(), 10)
 day = -1
 
+# print (consumer.position)
+
+producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+                         batch_size=50000)
+topic = 'tweet_url_titles'
+
 for message in consumer:
     tweet = message.value
     # process each tweet
     tweetjson = prePro.process(tweet)
     if tweetjson:
-        #print(tweetjson)
+        urls = tweetjson['urls']
+        titles = pageCrawler.pageCrawler(urls)
+        if len(titles) > 0:
+            producer.send(topic, {'id': tweetjson['id'], 'titles':titles}) 
+         
         time = int(round(float(tweetjson['timestamp_ms'])/1000))
         newDay = datetime.datetime.fromtimestamp(time).day
         if newDay != day:
