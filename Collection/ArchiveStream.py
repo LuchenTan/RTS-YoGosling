@@ -8,6 +8,7 @@ import shutil
 import sys
 import tarfile
 import time
+import subprocess
 
 from kafka import KafkaProducer
 
@@ -17,6 +18,12 @@ producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'
                          batch_size=config.batchsize)
 kafkaTopic = config.topic
 
+offsets = subprocess.check_output(["kafka-run-class.sh", "kafka.tools.GetOffsetShell","--broker-list=localhost:9092", "--topic=" + kafkaTopic]).decode("UTF-8")
+offset = int(offsets.split("\n")[0].split(":")[-1])
+print("Current offset:" + str(offset))
+
+with open('last_offset.txt', 'w') as f:
+    f.write(str(offset))
 
 class ArchiveStream():
     def __init__(self, archive_path):

@@ -1,7 +1,7 @@
-from Collection import Tokenizer, PreProcess, TwitterStream, pageCrawler
+from Collection import Tokenizer, PreProcess, pageCrawler
 from Query import QueryGeneration, TRECProfile
 from Relevance import simpleTitleMatch as tm
-from kafka import KafkaConsumer, KafkaProducer
+from kafka import KafkaConsumer, KafkaProducer, TopicPartition
 import json
 from config import consumer_config as config
 import datetime
@@ -10,6 +10,7 @@ import sys
 '''Consumes from kafka twitter api topic, does preprocessing, and output file with format topic_id, tweet_id, timestamp, run_no'''
 
 runNo = "run0"
+
 
 if len(sys.argv) > 1:
     runNo = sys.argv[1]
@@ -30,7 +31,17 @@ tknzr = Tokenizer.MyTweetTokenizer()
 prePro = PreProcess.PreProcessor(tknzr.tokenize)
 
 consumer = KafkaConsumer(value_deserializer=lambda v: json.loads(v.decode('utf-8')))
-consumer.subscribe([topic])
+
+partition = TopicPartition(topic, 0)
+consumer.assign([partition])
+
+
+offset = 0
+
+with open("last_offset.txt") as f:
+    offset = int(f.read())
+
+consumer.seek(partition, offset)
 
 dictlimit = dict.fromkeys(queryset.keys(), 10)
 day = -1
@@ -46,6 +57,7 @@ for message in consumer:
     # process each tweet
     tweetjson = prePro.process(tweet)
     if tweetjson:
+        print (tweetjson['text'])  
         urls = tweetjson['urls']
         titles = pageCrawler.pageCrawler(urls)
         if len(titles) > 0:
