@@ -1,7 +1,7 @@
-from Collection import Tokenizer, PreProcess, TwitterStream
+from Collection import Tokenizer, PreProcess
 from Query import QueryGeneration, TRECProfile
 from Relevance import simpleTitleMatch as tm
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, TopicPartition
 import json
 from config import consumer_config as config
 import datetime
@@ -35,7 +35,16 @@ tknzr = Tokenizer.MyTweetTokenizer()
 prePro = PreProcess.PreProcessor(tknzr.tokenize)
 
 consumer = KafkaConsumer(value_deserializer=lambda v: json.loads(v.decode('utf-8')))
-consumer.subscribe([topic])
+
+partition = TopicPartition(topic, 0)
+consumer.assign([partition])
+
+offset = 0
+
+with open("last_offset.txt") as f:
+    offset = int(f.read())
+
+consumer.seek(partition, offset)
 
 dictlimit = dict.fromkeys(queryset.keys(), 10)
 day = -1
