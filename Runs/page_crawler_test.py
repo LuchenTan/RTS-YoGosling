@@ -6,8 +6,15 @@ import json
 from config import consumer_config as config
 import datetime
 import sys
+import subprocess
 
 '''Consumes from kafka twitter api topic, does preprocessing, and output file with format topic_id, tweet_id, timestamp, run_no'''
+
+def cleanup_title(title):
+    asciiTitle = title.encode("ascii", errors="ignore").decode()
+    import string
+    transtable = {ord(c): None for c in string.punctuation}
+    return asciiTitle.translate(transtable)
 
 runNo = "run0"
 
@@ -35,7 +42,15 @@ consumer.seek(partition, offset)
 
 producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                          batch_size=50000)
-topic = 'tweet_url_titles'
+
+titlesTopic = config.titlesTopic
+
+offsets = subprocess.check_output(["kafka-run-class.sh", "kafka.tools.GetOffsetShell","--broker-list=localhost:9092", "--topic=" + titlesTopic]).decode("UTF-8")
+offsetTitles = int(offsets.split("\n")[0].split(":")[-1])
+print("Current offset:" + str(offsetTitles))
+
+with open('last_offset_titles.txt', 'w') as f:
+    f.write(str(offsetTitles))
 
 for message in consumer:
     tweet = message.value
@@ -43,6 +58,7 @@ for message in consumer:
     tweetjson = prePro.process(tweet)
     if tweetjson:
         urls = tweetjson['urls']
-        titles = pageCrawler.pageCrawler(urls)
+        titles = [cleanup_title(title) for title in pageCrawler.pageCrawler(urls)]
         if len(titles) > 0:
-            producer.send(topic, {'id': tweetjson['id'], 'titles':titles}) 
+            producer.send(topic, {'id': tweetjson['id'], 'titles':titles})
+
