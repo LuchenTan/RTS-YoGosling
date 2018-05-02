@@ -7,7 +7,7 @@ archive file from disk.
 
 Here is our system overview.
 
-![Overview](https://github.com/LuchenTan/RTS-YoGosling/blob/master/RTS-YoGosling%20System%20Overview%20v0.2.pdf)
+![Overview](overview.jpg)
 
 
 ##1. Installation
