@@ -24,14 +24,39 @@ Kafka installation follows **Step 1** [here](https://kafka.apache.org/quickstart
 
 ##2. Starting Kafka Service
 
-Following **Step 2** [here](https://kafka.apache.org/quickstart). 
+Before starting Kafka Service, some configuration on the server should be done for running our system.
+
+Go to the Kafka folder, write the following lines to ```config/server.properties``` file.
+
+```commandline
+> log.retention.hours=-1
+> delete.topic.enable=True 
+> auto.create.topics.enable=True
+```
+Then following **Step 2** [here](https://kafka.apache.org/quickstart). 
 ```buildoutcfg
-> cd kafka_2.11-1.1.0
 > bin/zookeeper-server-start.sh config/zookeeper.properties
 > bin/kafka-server-start.sh config/server.properties
 ```
 ##3. Build Kafka Topics
-Our system  
+
+**NOTE:** A configuration file **must** be set before we start building Kafka topics.
+The configuration file is ```config/producer.ini```. 
+
+For basic setting, the following arguments should be proper:
+* Kafka installation path
+* topic names (for listening from Streaming API or archive files)
+* For Streaming API: API secret key and tokens
+* For Archive files: the location of archive folder; the starting Unix time and the ending Unix time
+
+Now we can first build the raw tweets topic by running:
+```commandline
+python3 Runs/build_topic.py -s [stream or archive]
+```
+Then we can build a preprocessed tweets topic for further running by:
+```commandline
+
+```
 
 [comment]: <> (System Overview Google Doc:)
 [comment]: <> (https://docs.google.com/drawings/d/1cXnlvX4cQSX1yVulzVuHZX2xMGL_-y7AcHn7Ye9_uSI/edit?usp=sharing)

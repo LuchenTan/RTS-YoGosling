@@ -8,29 +8,33 @@ import shutil
 import sys
 import tarfile
 import time
-import subprocess
-
+import logging
 from kafka import KafkaProducer
-
-from config import producer_file_config as config
+from os import path
+import configparser
+config_path = path.join(path.dirname(__file__), '../config/producer.ini')
+config = configparser.ConfigParser()
+config.read(config_path)
 
 producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-                         batch_size=config.batchsize)
-kafkaTopic = config.topic
+                         batch_size=int(config['ARCHIVE']['batchsize']))
+kafkaTopic = config['ARCHIVE']['raw_topic']
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-offsets = subprocess.check_output(["kafka-run-class.sh", "kafka.tools.GetOffsetShell","--broker-list=localhost:9092", "--topic=" + kafkaTopic]).decode("UTF-8")
-offset = int(offsets.split("\n")[0].split(":")[-1])
-print("Current offset:" + str(offset))
-
-with open('last_offset.txt', 'w') as f:
-    f.write(str(offset))
+# offsets = subprocess.check_output(["kafka-run-class.sh", "kafka.tools.GetOffsetShell","--broker-list=localhost:9092", "--topic=" + kafkaTopic]).decode("UTF-8")
+# offset = int(offsets.split("\n")[0].split(":")[-1])
+# print("Current offset:" + str(offset))
+#
+# with open('last_offset.txt', 'w') as f:
+#     f.write(str(offset))
 
 class ArchiveStream():
     def __init__(self, archive_path):
         self.path = archive_path
         self.tmp_path = "tmp_dir"
 
-    def extract(self, lang='en', tmp_path=""):
+    def extract(self, lang=config['LANGUAGE']['lang'], tmp_path=""):
         if tmp_path:
             self.tmp_path = tmp_path
         if self.path.endswith(".tar"):
@@ -41,7 +45,7 @@ class ArchiveStream():
                 tar = tarfile.open(os.path.join(self.path, t), "r")
                 tar.extractall(self.tmp_path)
         else:
-            print("Please input a tar file path or a directory with tar files")
+            logger.error("Please input a tar file path or a directory with tar files")
             shutil.rmtree(self.tmp_path)
             sys.exit(1)
         for root, dirs, files in os.walk(self.tmp_path):
@@ -49,7 +53,7 @@ class ArchiveStream():
             files.sort(key=lambda x: int(x.split(".")[0]))
             for file in files:
                 if file.endswith(".bz2"):
-                    print("Start working on file: ", os.path.join(root, file))
+                    logger.info("Start working on file: {}".format(os.path.join(root, file)))
                     sys.stdout.flush()
                     with bz2.BZ2File(os.path.join(root, file), "r") as bz_file:
                         for line in bz_file:
@@ -58,8 +62,7 @@ class ArchiveStream():
                                 if lang:
                                     if tweet['lang'] == lang:
                                         try:
-                                            #print(tweet['timestamp_ms'])
-                                            if int(tweet['timestamp_ms']) >= 1501286400000 and int(tweet['timestamp_ms']) <= 1501977599000:
+                                            if int(config['ARCHIVE']['startpoint']) <= int(tweet['timestamp_ms']) <= int(config['ARCHIVE']['endpoint']):
                                                 producer.send(kafkaTopic, tweet)
                                         except:
                                             pass
@@ -70,10 +73,10 @@ class ArchiveStream():
                                         pass
         # clean up
         shutil.rmtree(self.tmp_path)
-        print(producer.metrics())
+        logger.info(producer.metrics())
 
 if __name__ == '__main__':
-    arcS = ArchiveStream(config.filename)
+    arcS = ArchiveStream(config['ARCHIVE']['location'])
     start = time.time()
     arcS.extract()
     print("Total time used: ", time.time() - start)
