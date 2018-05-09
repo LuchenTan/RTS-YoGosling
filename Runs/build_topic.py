@@ -35,9 +35,9 @@ else:
     section = 'STREAM'  # default
 
 # clean all topics
-topic_lst = ['raw_topic', 'title_topic', 'processed_topic']
+topic_lst = ['raw_topic', 'processed_topic']
 for topic in topic_lst:
-    process = Popen('/opt/Kafka/kafka_2.11-1.0.0/bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic {}'.format(config[section][topic]),
+    process = Popen('./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic {}'.format(config[section][topic]),
                     stdout=PIPE, stderr=STDOUT, shell=True, cwd=config['Kafka']['path'])
     process_output, _ = process.communicate()
     logger.info("Attempt to delete topic {}".format(config[section][topic]))

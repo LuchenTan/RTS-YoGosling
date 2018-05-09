@@ -25,7 +25,7 @@ class PreProcessor:
                  ascii_filter=True, ascii_count=3,
                  hashtag_count=5,
                  stopword=True,
-                 keep_urls=True, keep_hashtags=True):
+                 keep_urls=False, keep_hashtags=True):
         self.tokenizer = tokenizer # tokenizer
         self.en_lang = en_lang # use 'lang' field, 'en' only
         self.ascii_filter = ascii_filter # remove NON-ASCII chars or not
@@ -111,12 +111,7 @@ class PreProcessor:
         self.new_json['cleaned_text'] = " ".join(cleaned_text)
         return self.new_json
 
-    def getTweetJson(self):
-        return self.new_json
 
-    def setCrawledPage(self, text):
-        if self.new_json:
-            self.new_json['crawled_pages'] = text
 
 
 

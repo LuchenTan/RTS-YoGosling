@@ -58,9 +58,14 @@ python3 Runs/build_topic.py -s [stream or archive]
 ```
 Then we can build a preprocessed tweets topic for further running by:
 ```commandline
-
+python3 Runs/build_preprocessed_topic.py -s [stream or archive] [-u [True or False]]
 ```
 
+**NOTE:** We can start the preprocessed topic for Streaming API right after we start the raw tweets topic. 
+However, for archive files, we should wait util seeing the logging information of "Start working on file XXX",
+which means the system has finished decompressing the archive files and started producing to the raw tweets topic.
+
+## 4. 
 [//]: # (System Overview Google Doc:)
 [//]: # (https://docs.google.com/drawings/d/1cXnlvX4cQSX1yVulzVuHZX2xMGL_-y7AcHn7Ye9_uSI/edit?usp=sharing)
 

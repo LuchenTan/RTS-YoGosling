@@ -1,6 +1,8 @@
-from kafka import KafkaConsumer
 import json
-import config.consumer_config as config
+
+from kafka import KafkaConsumer
+
+import Notebooks.consumer_config as config
 
 topic = config.topic
 
