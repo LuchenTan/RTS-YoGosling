@@ -1,1 +1,5 @@
+Notebooks/*
 *.pyc
+Runs/tmp_dir/*
+.idea/
+

@@ -24,7 +24,7 @@ class PreProcessor:
     def __init__(self, tokenizer, en_lang=True,
                  ascii_filter=True, ascii_count=3,
                  hashtag_count=5,
-                 stopword=True,
+                 keep_stopword=False,
                  keep_urls=False, keep_hashtags=True):
         self.tokenizer = tokenizer # tokenizer
         self.en_lang = en_lang # use 'lang' field, 'en' only
@@ -32,7 +32,7 @@ class PreProcessor:
         self.ascii_count = ascii_count # ignore tweet if normal words less than this number
         self.hashtag_count = hashtag_count # ignore tweet if hashtag number greater than this number
         self.keep_urls = keep_urls # keep URLs in cleaned text
-        self.stopword = stopword # remove stop words from cleaned text
+        self.keep_stopword = keep_stopword # remove stop words from cleaned text
         self.keep_hashtags = keep_hashtags # keep hashtags in cleaned text
 
 
@@ -97,7 +97,7 @@ class PreProcessor:
             elif token_type == 'E':
                 self.new_json['emojis'].append(token)
             elif token_type == 'S':
-                if self.stopword:
+                if self.keep_stopword:
                     cleaned_text.append(token.lower())
 
         # Simple Trash Detection
