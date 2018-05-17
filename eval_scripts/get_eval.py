@@ -2,6 +2,7 @@ from subprocess import Popen, PIPE, STDOUT
 import logging
 import argparse
 import sys
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--run', help='indicating the location of run file', required=True)
@@ -34,7 +35,8 @@ process_mobile = Popen('python3 {} -q {} -t {} -r {}'.format(mobile_eval,
                                                              mobile_qrel,
                                                              mobile_epoch,
                                                              args.run),
-                       stdout=PIPE, stderr=STDOUT, shell=True)
+                       stdout=PIPE, stderr=STDOUT, shell=True,
+                       cwd=os.path.dirname(os.path.realpath(__file__)))
 process_mobile_output, _ = process_mobile.communicate()
 lines = process_mobile_output.rstrip().splitlines()
 for line in [lines[0], lines[-1]]:
@@ -47,7 +49,8 @@ process_batch = Popen('python3 {} -q {} -t {} -c {} -r {}'.format(batch_eval,
                                                                   batch_epoch,
                                                                   batch_cluster,
                                                                   args.run),
-                      stdout=PIPE, stderr=STDOUT, shell=True)
+                      stdout=PIPE, stderr=STDOUT, shell=True,
+                      cwd=os.path.dirname(os.path.realpath(__file__)))
 process_batch_out, _ = process_batch.communicate()
 lines = process_batch_out.rstrip().splitlines()
 for line in [lines[0], lines[-1]]:
