@@ -121,73 +121,51 @@ Batch Assessment Results:
 
 'RUNA	All  	**0.2533**	0.2315	**0.2626**	0.2408	-0.2553   	-0.1379   	-0.0274   	26843.3        	1.0            	634'
 
-* rm: Title Counting; sim; None; window size: 0
+* rm: Title Counting 0.7; sim; None; window size: 0
 ```commandline
-python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount_noSim_window0.txt -m simpleCount -d None -w 0
-python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount_noSim_window0.txt
-```
-Mobile Assessment Results: 
-
-'run                                     	topic	relevant	redundant	not_relevant	unjudgedtotal_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
-
-'RUNA	All	540	133	930	14640	15511	0.056	1.0	1.0	**0.3369**	**0.4198**	-523	-257'
-
-Batch Assessment Results:
-
-'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
-
-'RUNA	All  	**0.1978**	0.1276	**0.2101**	0.1399	-0.6845   	-0.4768   	-0.2813   	12417.3        1.0            	1022'
-
-
-* rm: Title Counting; sim: None; window size: 1hr
-```commandline
-python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount_noSim_window3600.txt -m simpleCount -d None -w 3600
-python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount_noSim_window3600.txt
-```
-Mobile Assessment Results: 
-
-'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
-
-'RUNA	All	1139	242	1614	9715	11344	0.144	1.0	1.0	**0.3803**	**0.4611**	-717	-233'
-Batch Assessment Results:
-
-'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
-
-'RUNA	All  	**0.2310**	0.1425	**0.2435**	0.1550	-0.8741   	-0.5921   	-0.3268   	50952.7        	1.0            	1410'
-
-* rm: Title Counting; sim: jaccard 0.6; window size: 0
-```commandline
-python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount_jaccard0.6_window0.txt -m simpleCount -d jaccard -U 0.6 -w 0
-python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount_jaccard0.6_window0.txt
+python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_noSim_window0.txt -m simpleCount -T 0.7 -d None -w 0
+python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_noSim_window0.txt
 ```
 
-Mobile Assessment Results: 
 
-'run                                     	topic	relevant	redundant	not_relevant	unjudgedtotal_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
-
-'RUNA	All	573	131	1008	14505	15431	0.06	1.0	1.0	**0.3347**	**0.4112**	-566	-304'
-
-Batch Assessment Results:
-
-'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
-
-'RUNA	All  	**0.2026**	0.1308	**0.2152**	0.1435	-0.7044   	-0.4878   	-0.2838   	14464.6        1.0            	1072'
-
-
-* rm: Title Counting; sim: jaccard 0.6; window size: 1hr
+* rm: Title Counting 0.7; sim: None; window size: 1hr
 ```commandline
-python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount_jaccard0.6_window1hr.txt -m simpleCount -d jaccard -U 0.6 -w 3600
-python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount_jaccard0.6_window1hr.txt
+python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_noSim_window1hr.txt -m simpleCount -T 0.7 -d None -w 3600
+python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_noSim_window1hr.txt
 ```
-Mobile Assessment Results: 
 
-'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
+* rm: Title Counting 0.7; sim: jaccard 0.6; window size: 0
+```commandline
+python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_jaccard0.6_window0.txt -m simpleCount -T 0.7 -d jaccard -U 0.6 -w 0
+python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_jaccard0.6_window0.txt
+```
 
-'RUNA	All	1110	232	1613	9673	11305	0.144	1.0	1.0	**0.3756**	**0.4541**	-735	-271'
-Batch Assessment Results:
 
-'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+* rm: Title Counting 0.7; sim: jaccard 0.6; window size: 1hr
+```commandline
+python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_jaccard0.6_window1hr.txt -m simpleCount -T 0.7 -d jaccard -U 0.6 -w 3600
+python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_jaccard0.6_window1hr.txt
+```
 
-'RUNA	All  	**0.2350**	0.1473	**0.2433**	0.1555	-0.8152   	-0.5474   	-0.2953   	49340.0        	1.0            	1347'
+### 4. Summary Table
 
-#### Table
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+ 
+
+| Run                                       | Mobile Coverage | strict-p | lenient-p | EG-p     | nCGp      |
+| ------------------------------------------|-----------------|----------|-----------|----------|-----------|
+| Title match, no similarity, window 0      | 0.651           | 0.4292   | 0.5088    | 0.2419   | 0.2653    |
+| Title match, no similarity, window 1hr    | 0.628           | 0.4313   | 0.5109    | 0.2464   | 0.2580    |
+| Title match, no similarity, window 2hrs   | 0.625           | 0.429    | 0.5123    | 0.2490   | 0.2506    |
+| Title match, Jaccard 0.6, window 0
+| Title match, Jaccard 0.8, window 0
+| Title match, Jaccard 0.6, window 1hr
+| Title Ratio 0.7, no similarity, window 0
+| Title Ratio 0.7, no similarity, window 1hr
+| Title Ratio 0.7, Jaccard 0.6, window 0
+| Title Ratio 0.7, Jaccard 0.6, window 1hr
