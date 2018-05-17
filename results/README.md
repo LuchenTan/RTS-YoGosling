@@ -126,6 +126,17 @@ Batch Assessment Results:
 python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_noSim_window0.txt -m simpleCount -T 0.7 -d None -w 0
 python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_noSim_window0.txt
 ```
+Mobile Assessment Results: 
+
+'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
+
+'RUNA	All	1469	300	1749	1003	2910	0.655	1.0	1.0	**0.4176	0.5028**	-580	20'
+
+Batch Assessment Results:
+
+'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+
+'RUNA	All  	**0.2529	0.2291	0.2729**	0.2490	-0.4566   	-0.2809   	-0.1156   	30630.8        	1.0            	915'
 
 
 * rm: Title Counting 0.7; sim: None; window size: 1hr
@@ -133,39 +144,63 @@ python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_noSim_
 python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_noSim_window1hr.txt -m simpleCount -T 0.7 -d None -w 3600
 python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_noSim_window1hr.txt
 ```
+Mobile Assessment Results: 
+
+'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
+
+'RUNA	All	1202	246	1401	882	2419	0.635	1.0	1.0	**0.4219	0.5082**	-445	47'
+
+Batch Assessment Results:
+
+'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+
+'RUNA	All  	**0.2583	0.2329	0.2657**	0.2403	-0.3386   	-0.1991   	-0.0678   	35080.2        	1.0            	735'
 
 * rm: Title Counting 0.7; sim: jaccard 0.6; window size: 0
 ```commandline
 python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_jaccard0.6_window0.txt -m simpleCount -T 0.7 -d jaccard -U 0.6 -w 0
 python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_jaccard0.6_window0.txt
 ```
+Mobile Assessment Results: 
 
+'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
+
+'RUNA	All	1427	265	1734	658	2499	0.737	1.0	1.0	**0.4165	0.4939**	-572	-42'
+
+Batch Assessment Results:
+
+'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+
+'RUNA	All  	**0.2637	0.2405	0.2769**	0.2537	-0.3341   	-0.1875   	-0.0496   	28756.2        	1.0            	789'
 
 * rm: Title Counting 0.7; sim: jaccard 0.6; window size: 1hr
 ```commandline
 python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts17_simpleCount0.7_jaccard0.6_window1hr.txt -m simpleCount -T 0.7 -d jaccard -U 0.6 -w 3600
 python3 eval_scripts/get_eval.py -y 17 -r ../results/rts17_simpleCount0.7_jaccard0.6_window1hr.txt
 ```
+Mobile Assessment Results: 
+
+'run                                     	topic	relevant	redundant	not_relevant	unjudged	total_length	coverage	mean_latency	median_latency	strict-p	lenient-p	online_utility(strict)	online_utility(lenient)'
+
+'RUNA	All	1165	208	1407	657	2143	0.693	1.0	1.0	**0.4191	0.4939**	-450	-34'
+
+Batch Assessment Results:
+
+'runtag	topic	EGp   	EG1   	nCGp  	nCG1  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+
+'RUNA	All  	**0.2657	0.2427	0.2702**	0.2473	-0.2686   	-0.1440   	-0.0268   	33356.3        	1.0            	672'
 
 ### 4. Summary Table
-
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
-
- 
 
 | Run                                       | Mobile Coverage | strict-p | lenient-p | EG-p     | nCGp      |
 | ------------------------------------------|-----------------|----------|-----------|----------|-----------|
 | Title match, no similarity, window 0      | 0.651           | 0.4292   | 0.5088    | 0.2419   | 0.2653    |
-| Title match, no similarity, window 1hr    | 0.628           | 0.4313   | 0.5109    | 0.2464   | 0.2580    |
-| Title match, no similarity, window 2hrs   | 0.625           | 0.429    | 0.5123    | 0.2490   | 0.2506    |
-| Title match, Jaccard 0.6, window 0
-| Title match, Jaccard 0.8, window 0
-| Title match, Jaccard 0.6, window 1hr
-| Title Ratio 0.7, no similarity, window 0
-| Title Ratio 0.7, no similarity, window 1hr
-| Title Ratio 0.7, Jaccard 0.6, window 0
-| Title Ratio 0.7, Jaccard 0.6, window 1hr
+| Title match, no similarity, window 1hr    | 0.628           | **0.4313**   | 0.5109    | 0.2464   | 0.2580    |
+| Title match, no similarity, window 2hrs   | 0.625           | 0.429    | **0.5123**    | 0.2490   | 0.2506    |
+| Title match, Jaccard 0.6, window 0        | 0.734           | 0.423    | 0.4963    | 0.2518   | 0.2693    | 
+| Title match, Jaccard 0.8, window 0        | 0.735           | 0.4276   | 0.5022    | 0.2509   | 0.2688    | 
+| Title match, Jaccard 0.6, window 1hr      | 0.691           | 0.4237   | 0.4913    | 0.2533   | 0.2626    |
+| Title Ratio 0.7, no similarity, window 0  | 0.655           | 0.4176	  | 0.5028    | 0.2529   | **0.2729**    |
+| Title Ratio 0.7, no similarity, window 1hr| 0.635           | 0.4219	  | 0.5082    | 0.2583   | 0.2657    |
+| Title Ratio 0.7, Jaccard 0.6, window 0    | **0.737**           | 0.4165	  | 0.4939    | 0.2637	  | 0.2769    |
+| Title Ratio 0.7, Jaccard 0.6, window 1hr  | 0.693           | 0.4191	  | 0.4939    | **0.2657**   | 0.2702    |
