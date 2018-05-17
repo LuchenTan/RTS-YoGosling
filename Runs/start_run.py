@@ -2,6 +2,8 @@ import argparse
 import logging
 import configparser
 import sys
+from os import path
+sys.path.append((path.dirname(path.dirname(path.abspath(__file__)))))
 from kafka import KafkaConsumer
 import Query.QueryGeneration as QueryGeneration
 import Query.TRECProfile as TRECProfile
@@ -9,8 +11,8 @@ import Relevance.api as RelMeasure
 import Similarity.api as SimMeasure
 import json
 import datetime
-from os import path
-sys.path.append((path.dirname(path.dirname(path.abspath(__file__)))))
+
+
 run_config_path = path.join(path.dirname(__file__), '../config/runs.ini')
 producer_config_path = path.join(path.dirname(__file__), '../config/producer.ini')
 
@@ -34,16 +36,19 @@ parser.add_argument('-o', '--output', required=True, default='rts-runA.txt',
 parser.add_argument('-r', '--runname', required=True, default='runA',
                     help='indicating the name of this run.')
 parser.add_argument('-m', '--relevance', required=True, default='title',
-                    choices=set(('title', )),
+                    choices=set(('title', 'simpleCount', )),
                     help='indicating the method chosen for the relevance measurement.')
-parser.add_argument('-T', '--relThreshold', default=0,
-                    help='the threshold value for the relevance measurement method')
+parser.add_argument('-T', '--relThreshold', default=0.1,
+                    help='the threshold value for the relevance measurement method', type=float)
 parser.add_argument('-d', '--similarity', required=True, default='jaccard',
                     choices=set(('None', 'jaccard', )),
                     help='indicating the method chosen for the similarity measurement.'
                          '"None" indicates not using similarity measurement.')
 parser.add_argument('-U', '--simThreshold', default=0.6,
-                    help='the threshold value for the similarity method')
+                    help='the threshold value for the similarity method', type=float)
+parser.add_argument('-w', '--window', default=0, type=int,
+                    help='indicating the length of a pushing window (in seconds). '
+                         'Default value is 0 -- push immediately.')
 args = parser.parse_args()
 
 
@@ -99,7 +104,10 @@ dictlimit = dict.fromkeys(queryset.keys(), int(config['SYSTEM']['volumn']))
 day = -1
 # submitted tweets
 dict_submitted = dict.fromkeys(queryset.keys(), [])
+max_score_tweet = dict.fromkeys(queryset.keys(), {'tweet': {}, 'score': args.relThreshold})
 
+windowSize = args.window
+lastPush = dict.fromkeys(queryset.keys(), int(int(producer_config['ARCHIVE']['startpoint'])/float(1000)))
 for message in consumer:
     tweet = message.value
     time = int(round(float(tweet['timestamp_ms'])/1000))
@@ -111,13 +119,21 @@ for message in consumer:
     for topic, query in queryset.items():
         if dictlimit[topic] > 0:
             # select the push
-            if RelMeasure.measure(tweet, query, args.relevance, args.relThreshold):
+            score = float(RelMeasure.measure(tweet, query, args.relevance, args.relThreshold))
+            if score >= max_score_tweet[topic]['score']:
+            #if (time - lastPush) >= windowSize:
                 if args.similarity == 'None':
-                    logger_out.critical("{} {} {} {}".format(topic, tweet['id'], time, args.runname))
-                    dictlimit[topic] -= 1
-                    dict_submitted[topic].append(tweet)
+                    simMeasure = True
                 else:
-                    if SimMeasure.measure(tweet, dict_submitted[topic], args.similarity, args.simThreshold):
-                        logger_out.critical("{} {} {} {}".format(topic, tweet['id'], time, args.runname))
+                    simMeasure = SimMeasure.measure(tweet, dict_submitted[topic], args.similarity, args.simThreshold)
+                if simMeasure:
+                    max_score_tweet[topic] = {'tweet': tweet, 'score': score}
+                    if (time - lastPush[topic]) >= windowSize:
+                        logger_out.critical("{} {} {} {}".format(topic, max_score_tweet[topic]['tweet']['id'], time, args.runname))
                         dictlimit[topic] -= 1
-                        dict_submitted[topic].append(tweet)
+                        dict_submitted[topic] = dict_submitted[topic] + [max_score_tweet[topic]['tweet']]
+                        # print([(topic, item) for topic, item in dict_submitted.items() if len(item) > 0])
+                        lastPush[topic] = time
+                        max_score_tweet[topic] = {'tweet': {}, 'score': args.relThreshold}
+                        # print([(topic, item) for topic, item in max_score_tweet.items() if item['score'] > args.relThreshold])
+

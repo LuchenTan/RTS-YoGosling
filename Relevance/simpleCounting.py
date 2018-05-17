@@ -1,4 +1,10 @@
-def countTitle(query, tweet):
+def countTitle(query, tweet, threshold):
     titleTokens = query['title'].keys()
-    return len(list(set(titleTokens) & set(tweet['normal_words'])))/len(titleTokens)
+    score = len(list(set(titleTokens) & set(tweet['normal_words'])))/float(len(titleTokens))
+
+    if score >= threshold:
+        return score
+    else:
+        return False
+
 

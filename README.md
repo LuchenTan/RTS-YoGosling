@@ -50,7 +50,7 @@ For basic setting, the following arguments should be proper:
 * Kafka installation path
 * topic names (for listening from Streaming API or archive files)
 * For Streaming API: API secret key and tokens
-* For Archive files: the location of archive folder; the starting Unix time and the ending Unix time
+* For Archive files: the location of archive folder; the starting Unix time and the ending Unix time (in **ms**)
 
 Now we can first build the raw tweets topic by running:
 ```commandline
@@ -83,11 +83,19 @@ To build a run, we need to set up a configuration file for the runs in ```config
 A TREC style run output file could be built by running:
 
 ```commandline
-python3 Runs/start_run.py -s [stream or archive] --no-crawl-url -o [output_path] -r [runname] -m [relevance measurement method] [-T [threshold]] -d [similarity method] [-U [similarity threshold]]
+python3 Runs/start_run.py -s [stream or archive] 
+--no-crawl-url -o [output_path] -r [runname] 
+-m [relevance measurement method] [-T [threshold]] 
+-d [similarity method] [-U [similarity threshold]]
+-w [push window size]
 ```
 If you would like to add more relevance measurement methods or similarity measurement methods, you can put the scripts under folder
 ```Relevance``` or ```Similarity``` and modify the ```api.py``` module in them. 
 
+## 5. Evaluation
+```commandline
+python3 eval_scripts/get_eval.py -r [run file] -y [year]
+```
 [//]: # (System Overview Google Doc:)
 [//]: # (https://docs.google.com/drawings/d/1cXnlvX4cQSX1yVulzVuHZX2xMGL_-y7AcHn7Ye9_uSI/edit?usp=sharing)
 

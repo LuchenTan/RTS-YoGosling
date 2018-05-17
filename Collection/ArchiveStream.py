@@ -42,10 +42,15 @@ class ArchiveStream():
             tar.extractall(self.tmp_path)
         elif os.path.isdir(self.path):
             for t in os.listdir(self.path):
-                tar = tarfile.open(os.path.join(self.path, t), "r")
-                tar.extractall(self.tmp_path)
+                try:
+                    tar = tarfile.open(os.path.join(self.path, t), "r")
+                    tar.extractall(self.tmp_path)
+                # TODO: need to be changed for different input formats
+                except:
+                    self.tmp_path = self.path
+                    pass
         else:
-            logger.error("Please input a tar file path or a directory with tar files")
+            logger.error("Please input a tar file path or a directory with tar files or bz files")
             shutil.rmtree(self.tmp_path)
             sys.exit(1)
         for root, dirs, files in os.walk(self.tmp_path):
@@ -74,6 +79,7 @@ class ArchiveStream():
         # clean up
         shutil.rmtree(self.tmp_path)
         logger.info(producer.metrics())
+
 
 if __name__ == '__main__':
     arcS = ArchiveStream(config['ARCHIVE']['location'])

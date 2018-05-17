@@ -35,7 +35,7 @@ else:
     section = 'STREAM'  # default
 
 # clean all topics
-topic_lst = ['raw_topic', 'processed_topic']
+topic_lst = ['raw_topic', 'processed_topic_crawled', 'processed_topic_nocrawl']
 for topic in topic_lst:
     process = Popen('./bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic {}'.format(config[section][topic]),
                     stdout=PIPE, stderr=STDOUT, shell=True, cwd=config['Kafka']['path'])
