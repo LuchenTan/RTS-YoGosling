@@ -152,4 +152,4 @@ for topic in sorted(qrels_dt.keys()):
 print("\t".join([runname, "All", str(total_rel), str(total_redundant), str(total_non_rel), str(total_unjudged), str(total_length),
                 str(round(numpy.mean(all_delay) if all_delay != [] else 0, 1)),
                 str(round(numpy.median(all_delay) if all_delay != [] else 0, 1))]))
-print(runname, '# missing tweet ids in the pool', missing_tweets)
+#print(runname, '# missing tweet ids in the pool', missing_tweets)

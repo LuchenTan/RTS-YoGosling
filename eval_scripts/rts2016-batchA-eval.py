@@ -181,7 +181,7 @@ for topic in sorted(qrels_dt):
                         pain_count += 1
 
                 eg = sum(gains[:min(len(gains), K)]) / len(run_dt[topic][day])
-                max_gains = max_gain_dt.values()
+                max_gains = list(max_gain_dt.values())
                 max_gains.sort(reverse=True)
                 max_gain = sum(max_gains[:min(len(max_gains), K)])
                 ncg = sum(gains[:min(len(gains), K)]) / max_gain

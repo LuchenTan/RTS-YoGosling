@@ -229,6 +229,13 @@ year = 16
 python3 Runs/start_run.py -s archive -r RUNA --no-crawl-url -o results/rts16_title_noSim_window0.txt -m title -d None
 python3 eval_scripts/get_eval.py -y 16 -r ../results/rts16_title_noSim_window0.txt
 ```
+Mobile Assessment Results: 
+b'run	topic	relevant	redundant	not_relevant	unjudged	total_length	mean_latency	median_latency'
+b'RUNA	All	104	4	83	1517	1699	140.0	140.0'
+Batch Assessment Results:
+b'runtag	topic	EG1   	EG0   	nCG1  	nCG0  	GMP.33    	GMP.50    	GMP.66    	mean_latency   	median_latency 	total_length'
+b'RUNA	All  	0.2300	0.0158	0.2349	0.0207	-0.3691   	-0.2612   	-0.1596   	115495.6       140.0          	374'
+
 
 * rm: Title Match; sim: None; window size: 1hr
 
